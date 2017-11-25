@@ -1,0 +1,14 @@
+out
+testing
+node_modules
+*.sw?
+.vscode-test
+.vscode
+.DS_Store
+*.vsix
+*.log
+
+typings/*
+!typings/custom/
+testing
+*.un~
