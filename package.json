@@ -26,14 +26,28 @@
 		},
         "commands": [
             {
-                "command": "saveSelectedCodeFragment",
+                "command": "codeFragments.saveSelectedCodeFragment",
                 "title": "Save selection as Code Fragment"
             },
             {
-                "command": "insertCodeFragment",
+                "command": "codeFragments.insertCodeFragment",
                 "title": "Insert Code Fragment"
             }
-        ]
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "codeFragments.insertCodeFragment",
+                    "when": "never"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "codeFragments.saveSelectedCodeFragment",
+                    "when": "editorTextFocus"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

@@ -15,43 +15,57 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
     return element;
   }
 
+  initialize(): Thenable<void> {
+    this.codeFragments = this.extensionContext.globalState.get("CodeFragmentCollection");
+
+    // if (this.codeFragments) {
+    //   return Promise.resolve();
+    // }
+
+    const exampleFragmentId = this.saveCodeFragmentContent("Example code fragment { } etc foo");
+
+    this.codeFragments = new CodeFragmentCollection([
+      new CodeFragmentHeader(
+        exampleFragmentId,
+        "Example fragment"
+      )
+    ]);
+
+    return this.extensionContext.globalState.update(
+      "CodeFragmentCollection",
+      this.codeFragments
+    );
+  }
+
   getChildren(element?: CodeFragment): Thenable<CodeFragment[]> {
     return new Promise(resolve => {
-      if (!this.codeFragments) {
-        this.codeFragments = this.extensionContext.globalState.get("CodeFragmentCollection");
-
-        if (!this.codeFragments) {
-          const exampleFragmentId = this.saveCodeFragmentContent("Example code fragment { } etc foo");
-
-          this.codeFragments = new CodeFragmentCollection([
-            new CodeFragmentHeader(
-              exampleFragmentId,
-              "Example fragment"
-            )
-          ]);
-
-          this.extensionContext.globalState.update(
-            "CodeFragmentCollection",
-            this.codeFragments
-          );
-        }
-      }
-
       resolve(
         this.codeFragments.fragments.map(f =>
-          new CodeFragment(f.label, vscode.TreeItemCollapsibleState.None, { command: 'insertCodeFragment', title: 'Insert Code Fragment' }),
+          new CodeFragment(
+            f.label,
+            vscode.TreeItemCollapsibleState.None,
+            { 
+              command: 'codeFragments.insertCodeFragment',
+              title: 'Insert Code Fragment',
+              tooltip: 'Insert Code Fragment',
+              arguments: [f.id]
+            }),
         )
       );
-
-      //   [
-      //   new CodeFragment('alma', vscode.TreeItemCollapsibleState.None, { command: 'insertCodeFragment', title: 'Insert Code Fragment' }),
-      //   // new CodeFragment('narancs', vscode.TreeItemCollapsibleState.None),
-      //   // new CodeFragment('dinnye', vscode.TreeItemCollapsibleState.None),
-      // ]);
     });
   }
 
-  saveCodeFragmentContent(content: string): string {
+  getFragmentContent(id: string): string {
+    const fragmentContent = this.extensionContext.globalState.get<CodeFragmentContent>(id);
+
+    if(fragmentContent) {
+      return fragmentContent.content;
+    }
+
+    return "";
+  }
+
+  private saveCodeFragmentContent(content: string): string {
     const id = "CodeFragmentContent" + this.generateId();
 
     this.extensionContext.globalState.update(
@@ -65,8 +79,26 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
     return id;
   }
 
-  generateId(): string {
+  private generateId(): string {
     return Math.floor((1 + Math.random()) * 0x1000000000000).toString();
+  }
+
+  saveNewCodeFragment(content: string): Thenable<void> {
+    const id = this.saveCodeFragmentContent(content);
+
+    const header = new CodeFragmentHeader(
+      id,
+      content.substr(0, 10)
+    );
+
+    this.codeFragments.fragments.push(header);
+
+    this._onDidChangeTreeData.fire();
+
+    return this.extensionContext.globalState.update(
+      "CodeFragmentCollection",
+      this.codeFragments
+    );
   }
 }
 
