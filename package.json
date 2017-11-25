@@ -17,13 +17,13 @@
     "main": "./out/src/extension",
     "contributes": {
         "views": {
-			"explorer": [
+            "explorer": [
                 {
-					"id": "codeFragments",
-					"name": "Code Fragments"
-				}
+                    "id": "codeFragments",
+                    "name": "Code Fragments"
+                }
             ]
-		},
+        },
         "commands": [
             {
                 "command": "codeFragments.saveSelectedCodeFragment",
@@ -52,15 +52,17 @@
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
+        "lint": "tslint -c tslint.json 'src/**/*.ts'",
         "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.5.2",
-        "vscode": "^1.1.5",
-        "mocha": "^3.5.0",
+        "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
-        "@types/mocha": "^2.2.42"
+        "mocha": "^3.5.0",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.5"
     }
 }
