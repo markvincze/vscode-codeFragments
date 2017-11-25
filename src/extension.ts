@@ -1,6 +1,6 @@
 'use strict';
 import * as vscode from 'vscode';
-import { CodeFragmentProvider } from './codeFragments';
+import { CodeFragment, CodeFragmentProvider } from './codeFragments';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -48,6 +48,15 @@ export function activate(context: vscode.ExtensionContext) {
         });
     };
 
+    const deleteCodeFragment = (fragment?: CodeFragment) => {
+        if (!fragment) {
+            vscode.window.showInformationMessage(
+                'Delete a fragment by right clicking on it in the list and selecting "Delete Code Fragment".');
+        }
+
+        codeFragmentProvider.deleteFragment(fragment.id);
+    };
+
     codeFragmentProvider
         .initialize()
         .then(() => {
@@ -55,6 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.saveSelectedCodeFragment', saveSelectedCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.insertCodeFragment', insertCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteCodeFragment', deleteCodeFragment));
         });
 }
 

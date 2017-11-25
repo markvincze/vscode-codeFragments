@@ -1,5 +1,36 @@
 import * as vscode from 'vscode';
 
+class CodeFragmentHeader {
+  constructor(
+    public readonly id: string,
+    public readonly label: string
+  ) { }
+}
+
+class CodeFragmentCollection {
+  constructor(
+    public readonly fragments: CodeFragmentHeader[]
+  ) { }
+}
+
+class CodeFragmentContent {
+  constructor(
+    public readonly id: string,
+    public readonly content: string
+  ) { }
+}
+
+export class CodeFragment extends vscode.TreeItem {
+  constructor(
+    public readonly label: string,
+    public readonly id: string,
+    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+    public readonly command: vscode.Command,
+  ) {
+    super(label, collapsibleState);
+  }
+}
+
 export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragment> {
   private onDidChangeTreeDataEmitter: vscode.EventEmitter<CodeFragment | undefined> =
     new vscode.EventEmitter<CodeFragment | undefined>();
@@ -43,6 +74,7 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
         this.codeFragments.fragments.map(f =>
           new CodeFragment(
             f.label,
+            f.id,
             vscode.TreeItemCollapsibleState.None,
             {
               command: 'codeFragments.insertCodeFragment',
@@ -70,7 +102,7 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
 
     const header = new CodeFragmentHeader(
       id,
-      content.substr(0, 10)
+      content.substr(0, 100)
     );
 
     this.codeFragments.fragments.push(header);
@@ -81,6 +113,18 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
       'CodeFragmentCollection',
       this.codeFragments
     );
+  }
+
+  public deleteFragment(fragmentId: string) {
+    this.extensionContext.globalState.update(fragmentId, undefined);
+
+    const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
+
+    if (fragmentToDelete !== -1) {
+      this.codeFragments.fragments.splice(fragmentToDelete, 1);
+
+      this.onDidChangeTreeDataEmitter.fire();
+    }
   }
 
   private saveCodeFragmentContent(content: string): string {
@@ -99,35 +143,5 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
 
   private generateId(): string {
     return Math.floor((1 + Math.random()) * 0x1000000000000).toString();
-  }
-}
-
-class CodeFragmentHeader {
-  constructor(
-    public readonly id: string,
-    public readonly label: string
-  ) { }
-}
-
-class CodeFragmentCollection {
-  constructor(
-    public readonly fragments: CodeFragmentHeader[]
-  ) { }
-}
-
-class CodeFragmentContent {
-  constructor(
-    public readonly id: string,
-    public readonly content: string
-  ) { }
-}
-
-class CodeFragment extends vscode.TreeItem {
-  constructor(
-    public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly command: vscode.Command,
-  ) {
-    super(label, collapsibleState);
   }
 }

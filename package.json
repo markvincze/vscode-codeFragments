@@ -38,6 +38,10 @@
             {
                 "command": "codeFragments.insertCodeFragment",
                 "title": "Insert Code Fragment"
+            },
+            {
+                "command": "codeFragments.deleteCodeFragment",
+                "title": "Delete Code Fragment"
             }
         ],
         "menus": {
@@ -48,7 +52,12 @@
             "editor/context": [{
                 "command": "codeFragments.saveSelectedCodeFragment",
                 "when": "editorTextFocus"
-            }]
+            }],
+            "view/item/context": [
+                {
+                    "command": "codeFragments.deleteCodeFragment"
+                }
+            ]
         }
     },
     "scripts": {
