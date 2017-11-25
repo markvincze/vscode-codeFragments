@@ -1,15 +1,24 @@
 {
-    "name": "hello",
-    "displayName": "hello",
-    "description": "",
+    "name": "code-fragments",
+    "displayName": "Code Fragments",
+    "description": "Save code fragments for later inserting them into source files.",
     "version": "0.0.1",
-    "publisher": "testpub",
+    "publisher": "markvincze",
+    "license": "SEE LICENSE IN LICENSE",
+    "author": {
+        "name": "Mark Vincze",
+        "url": "https://blog.markvincze.com"
+    },
     "engines": {
         "vscode": "^1.16.0"
     },
     "categories": [
         "Other"
     ],
+    "keywords": [
+        "toolbar", "toolbox", "fragments", "presentation"
+    ],
+    "preview": true,
     "activationEvents": [
         "onCommand:saveSelectedCodeFragment",
         "onView:codeFragments"
@@ -17,15 +26,12 @@
     "main": "./out/src/extension",
     "contributes": {
         "views": {
-            "explorer": [
-                {
-                    "id": "codeFragments",
-                    "name": "Code Fragments"
-                }
-            ]
+            "explorer": [{
+                "id": "codeFragments",
+                "name": "Code Fragments"
+            }]
         },
-        "commands": [
-            {
+        "commands": [{
                 "command": "codeFragments.saveSelectedCodeFragment",
                 "title": "Save selection as Code Fragment"
             },
@@ -35,18 +41,14 @@
             }
         ],
         "menus": {
-            "commandPalette": [
-                {
-                    "command": "codeFragments.insertCodeFragment",
-                    "when": "never"
-                }
-            ],
-            "editor/context": [
-                {
-                    "command": "codeFragments.saveSelectedCodeFragment",
-                    "when": "editorTextFocus"
-                }
-            ]
+            "commandPalette": [{
+                "command": "codeFragments.insertCodeFragment",
+                "when": "never"
+            }],
+            "editor/context": [{
+                "command": "codeFragments.saveSelectedCodeFragment",
+                "when": "editorTextFocus"
+            }]
         }
     },
     "scripts": {
