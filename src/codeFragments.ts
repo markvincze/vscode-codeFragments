@@ -84,10 +84,10 @@ function foo() {
             f.id,
             vscode.TreeItemCollapsibleState.None,
             {
+              arguments: [f.id],
               command: 'codeFragments.insertCodeFragment',
               title: 'Insert Code Fragment',
-              tooltip: 'Insert Code Fragment',
-              arguments: [f.id]
+              tooltip: 'Insert Code Fragment'
             }),
         )
       );
