@@ -2,7 +2,7 @@
     "name": "code-fragments",
     "displayName": "Code Fragments",
     "description": "Save code fragments, and later easily insert them into source files.",
-    "version": "0.0.3",
+    "version": "1.0.0",
     "publisher": "markvincze",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
@@ -34,7 +34,6 @@
     "keywords": [
         "toolbar", "toolbox", "fragments", "presentation"
     ],
-    "preview": true,
     "activationEvents": [
         "onCommand:saveSelectedCodeFragment",
         "onView:codeFragments"

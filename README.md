@@ -7,7 +7,7 @@ It can be specifically useful when doing coding demos during presentations.
 
 ## Features
 
-After installing the extension, a new section called "CODE FRAGMENTS" is added to the Explorer, which shows a list of the previously saved fragments.  
+After installing the extension, a new section called `CODE FRAGMENTS` is added to the Explorer, which shows a list of the previously saved fragments.  
 You can save a piece of code by selecting it in the editor, and then executing the "Save selection as Code Fragment" from the Command Palette (brought up with `Ctrl+Shift+P`) or in the context menu.  
 Clicking on an existing fragment in the list inserts its content into the editor at the current cursor position.
 
@@ -27,4 +27,4 @@ Initial release of Code Fragments.
 
 ## Credits
 
-<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>.</div>
