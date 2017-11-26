@@ -1,5 +1,7 @@
 # Code Fragments extension for Visual Studio Code
 
+[![Build Status](https://travis-ci.org/markvincze/vscode-codeFragments.svg?branch=master)](https://travis-ci.org/markvincze/vscode-codeFragments)
+
 With this extension you can save static code fragments for later use, and easily insert them into source files whenever needed.  
 It can be specifically useful when doing coding demos during presentations.
 
