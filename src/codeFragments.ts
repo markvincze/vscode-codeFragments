@@ -53,7 +53,14 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
       return Promise.resolve();
     }
 
-    const exampleFragmentId = this.saveCodeFragmentContent('Example code fragment { } etc foo');
+    const exampleFragmentContent =
+      `// This is an example fragment.
+// Save a new fragment with the "Save selection as Code Fragment" command.
+function foo() {
+  alert('Thank you for using the Code Fragments extension!');
+}`;
+
+    const exampleFragmentId = this.saveCodeFragmentContent(exampleFragmentContent);
 
     this.codeFragments = new CodeFragmentCollection([
       new CodeFragmentHeader(
