@@ -1,8 +1,8 @@
 {
     "name": "code-fragments",
     "displayName": "Code Fragments",
-    "description": "Save code fragments for later inserting them into source files.",
-    "version": "0.0.1",
+    "description": "Save code fragments, and later easily insert them into source files.",
+    "version": "0.0.3",
     "publisher": "markvincze",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
@@ -11,7 +11,7 @@
     },
     "icon": "images/icon.png",
     "galleryBanner": {
-        "color": "#C80000",
+        "color": "#282C34",
         "theme": "dark"
     },
     "badges": [
