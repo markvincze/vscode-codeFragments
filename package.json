@@ -42,6 +42,10 @@
             {
                 "command": "codeFragments.deleteCodeFragment",
                 "title": "Delete Code Fragment"
+            },
+            {
+                "command": "codeFragments.renameCodeFragment",
+                "title": "Rename Code Fragment"
             }
         ],
         "menus": {
@@ -53,11 +57,14 @@
                 "command": "codeFragments.saveSelectedCodeFragment",
                 "when": "editorTextFocus"
             }],
-            "view/item/context": [
-                {
-                    "command": "codeFragments.deleteCodeFragment"
-                }
-            ]
+            "view/item/context": [{
+                "command": "codeFragments.deleteCodeFragment",
+                "when": "view == codeFragments"
+            },
+            {
+                "command": "codeFragments.renameCodeFragment",
+                "when": "view == codeFragments"
+            }]
         }
     },
     "scripts": {

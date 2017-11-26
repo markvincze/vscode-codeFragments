@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 class CodeFragmentHeader {
   constructor(
     public readonly id: string,
-    public readonly label: string
+    public label: string
   ) { }
 }
 
@@ -49,9 +49,9 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
   public initialize(): Thenable<void> {
     this.codeFragments = this.extensionContext.globalState.get('CodeFragmentCollection');
 
-    // if (this.codeFragments) {
-    //   return Promise.resolve();
-    // }
+    if (this.codeFragments) {
+      return Promise.resolve();
+    }
 
     const exampleFragmentId = this.saveCodeFragmentContent('Example code fragment { } etc foo');
 
@@ -109,13 +109,10 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
 
     this.onDidChangeTreeDataEmitter.fire();
 
-    return this.extensionContext.globalState.update(
-      'CodeFragmentCollection',
-      this.codeFragments
-    );
+    return this.persistCodeFragmentCollection();
   }
 
-  public deleteFragment(fragmentId: string) {
+  public deleteFragment(fragmentId: string): Thenable<void> {
     this.extensionContext.globalState.update(fragmentId, undefined);
 
     const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
@@ -124,7 +121,25 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
       this.codeFragments.fragments.splice(fragmentToDelete, 1);
 
       this.onDidChangeTreeDataEmitter.fire();
+
+      return this.persistCodeFragmentCollection();
     }
+
+    return Promise.resolve();
+  }
+
+  public renameFragment(fragmentId: string, newLabel: string): Thenable<void> {
+    const fragment = this.codeFragments.fragments.find(f => f.id === fragmentId);
+
+    if (fragment) {
+      fragment.label = newLabel;
+
+      this.onDidChangeTreeDataEmitter.fire();
+
+      return this.persistCodeFragmentCollection();
+    }
+
+    return Promise.resolve();
   }
 
   private saveCodeFragmentContent(content: string): string {
@@ -139,6 +154,13 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
     );
 
     return id;
+  }
+
+  private persistCodeFragmentCollection(): Thenable<void> {
+    return this.extensionContext.globalState.update(
+      'CodeFragmentCollection',
+      this.codeFragments
+    );
   }
 
   private generateId(): string {

@@ -57,6 +57,29 @@ export function activate(context: vscode.ExtensionContext) {
         codeFragmentProvider.deleteFragment(fragment.id);
     };
 
+    const renameCodeFragment = (fragment?: CodeFragment) => {
+        if (!fragment) {
+            vscode.window.showInformationMessage(
+                'Rename a fragment by right clicking on it in the list and selecting "Rename Code Fragment".');
+        }
+
+        const opt: vscode.InputBoxOptions = {
+            ignoreFocusOut: false,
+            placeHolder: 'Code Fragment Name',
+            prompt: 'Rename Code Fragment...',
+            value: fragment.label
+        };
+
+        vscode.window.showInputBox(opt)
+            .then(newName => {
+                if (newName) {
+                    return codeFragmentProvider.renameFragment(fragment.id, newName);
+                }
+
+                return Promise.resolve();
+            });
+    };
+
     codeFragmentProvider
         .initialize()
         .then(() => {
@@ -65,6 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.saveSelectedCodeFragment', saveSelectedCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.insertCodeFragment', insertCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteCodeFragment', deleteCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.renameCodeFragment', renameCodeFragment));
         });
 }
 
