@@ -80,6 +80,30 @@ export function activate(context: vscode.ExtensionContext) {
             });
     };
 
+    const moveUpCodeFragment = (fragment?: CodeFragment) => {
+        if (fragment) {
+            codeFragmentProvider.moveUpCodeFragment(fragment.id);
+        }
+    };
+
+    const moveDownCodeFragment = (fragment?: CodeFragment) => {
+        if (fragment) {
+            codeFragmentProvider.moveDownCodeFragment(fragment.id);
+        }
+    };
+
+    const moveToTopCodeFragment = (fragment?: CodeFragment) => {
+        if (fragment) {
+            codeFragmentProvider.moveToTopCodeFragment(fragment.id);
+        }
+    };
+
+    const moveToBottomCodeFragment = (fragment?: CodeFragment) => {
+        if (fragment) {
+            codeFragmentProvider.moveToBottomCodeFragment(fragment.id);
+        }
+    };
+
     codeFragmentProvider
         .initialize()
         .then(() => {
@@ -89,6 +113,10 @@ export function activate(context: vscode.ExtensionContext) {
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.insertCodeFragment', insertCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteCodeFragment', deleteCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.renameCodeFragment', renameCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveUpCodeFragment', moveUpCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveDownCodeFragment', moveDownCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToTopCodeFragment', moveToTopCodeFragment));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToBottomCodeFragment', moveToBottomCodeFragment));
         });
 }
 

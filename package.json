@@ -46,6 +46,22 @@
             {
                 "command": "codeFragments.renameCodeFragment",
                 "title": "Rename Code Fragment"
+            },
+            {
+                "command": "codeFragments.moveUpCodeFragment",
+                "title": "Move up"
+            },
+            {
+                "command": "codeFragments.moveDownCodeFragment",
+                "title": "Move down"
+            },
+            {
+                "command": "codeFragments.moveToTopCodeFragment",
+                "title": "Move to top"
+            },
+            {
+                "command": "codeFragments.moveToBottomCodeFragment",
+                "title": "Move to bottom"
             }
         ],
         "menus": {
@@ -59,11 +75,33 @@
             }],
             "view/item/context": [{
                 "command": "codeFragments.deleteCodeFragment",
-                "when": "view == codeFragments"
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.baseGroup"
             },
             {
                 "command": "codeFragments.renameCodeFragment",
-                "when": "view == codeFragments"
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.baseGroup"
+            },
+            {
+                "command": "codeFragments.moveUpCodeFragment",
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.moveGroup"
+            },
+            {
+                "command": "codeFragments.moveDownCodeFragment",
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.moveGroup"
+            },
+            {
+                "command": "codeFragments.moveToTopCodeFragment",
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.moveGroup"
+            },
+            {
+                "command": "codeFragments.moveToBottomCodeFragment",
+                "when": "view == codeFragments",
+                "group": "codeFragments.viewItemContext.moveGroup"
             }]
         }
     },

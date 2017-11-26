@@ -142,6 +142,93 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
     return Promise.resolve();
   }
 
+  public moveUpCodeFragment(id: string): Thenable<void> {
+    return this.executeMove(
+      id,
+      index => {
+        if (index > 0) {
+          this.codeFragments.fragments.splice(
+            index - 1,
+            0,
+            this.codeFragments.fragments.splice(index, 1)[0]
+          );
+
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
+
+  public moveDownCodeFragment(id: string) {
+    return this.executeMove(
+      id,
+      index => {
+        if (index > -1 && index < this.codeFragments.fragments.length - 1) {
+          this.codeFragments.fragments.splice(
+            index + 1,
+            0,
+            this.codeFragments.fragments.splice(index, 1)[0]
+          );
+
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
+
+  public moveToTopCodeFragment(id: string) {
+    return this.executeMove(
+      id,
+      index => {
+        if (index > 0) {
+          this.codeFragments.fragments.splice(
+            0,
+            0,
+            this.codeFragments.fragments.splice(index, 1)[0]
+          );
+
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
+
+  public moveToBottomCodeFragment(id: string) {
+    return this.executeMove(
+      id,
+      index => {
+        if (index > -1 && index < this.codeFragments.fragments.length - 1) {
+          this.codeFragments.fragments.splice(
+            this.codeFragments.fragments.length - 1,
+            0,
+            this.codeFragments.fragments.splice(index, 1)[0]
+          );
+
+          return true;
+        }
+
+        return false;
+      }
+    );
+  }
+
+  private executeMove(id: string, moveOperation: (index: number) => boolean): Thenable<void> {
+    const index = this.codeFragments.fragments.findIndex(f => f.id === id);
+
+    if (moveOperation(index)) {
+      this.onDidChangeTreeDataEmitter.fire();
+      return this.persistCodeFragmentCollection();
+    }
+
+    return Promise.resolve();
+  }
+
   private saveCodeFragmentContent(content: string): string {
     const id = 'CodeFragmentContent' + this.generateId();
 
