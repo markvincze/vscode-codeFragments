@@ -1,26 +1,8 @@
 import * as vscode from 'vscode';
 
-class CodeFragmentHeader {
-  constructor(
-    public readonly id: string,
-    public label: string
-  ) { }
-}
+import { CodeFragmentCollection, CodeFragmentContent, CodeFragmentHeader, IFragmentManager } from './fragmentManager';
 
-class CodeFragmentCollection {
-  constructor(
-    public readonly fragments: CodeFragmentHeader[]
-  ) { }
-}
-
-class CodeFragmentContent {
-  constructor(
-    public readonly id: string,
-    public readonly content: string
-  ) { }
-}
-
-export class CodeFragment extends vscode.TreeItem {
+export class CodeFragmentTreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     public readonly id: string,
@@ -31,10 +13,10 @@ export class CodeFragment extends vscode.TreeItem {
   }
 }
 
-export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragment> {
-  private onDidChangeTreeDataEmitter: vscode.EventEmitter<CodeFragment | undefined> =
-    new vscode.EventEmitter<CodeFragment | undefined>();
-  public readonly onDidChangeTreeData: vscode.Event<CodeFragment | undefined> = this.onDidChangeTreeDataEmitter.event;
+export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmentTreeItem>, IFragmentManager  {
+  private onDidChangeTreeDataEmitter: vscode.EventEmitter<CodeFragmentTreeItem | undefined> =
+    new vscode.EventEmitter<CodeFragmentTreeItem | undefined>();
+  public readonly onDidChangeTreeData: vscode.Event<CodeFragmentTreeItem | undefined> = this.onDidChangeTreeDataEmitter.event;
 
   private codeFragments: CodeFragmentCollection = undefined;
 
@@ -42,7 +24,7 @@ export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmen
     private readonly extensionContext: vscode.ExtensionContext
   ) { }
 
-  public getTreeItem(element: CodeFragment): vscode.TreeItem {
+  public getTreeItem(element: CodeFragmentTreeItem): vscode.TreeItem {
     return element;
   }
 
@@ -75,11 +57,11 @@ function foo() {
     );
   }
 
-  public getChildren(element?: CodeFragment): Thenable<CodeFragment[]> {
+  public getChildren(element?: CodeFragmentTreeItem): Thenable<CodeFragmentTreeItem[]> {
     return new Promise(resolve => {
       resolve(
         this.codeFragments.fragments.map(f =>
-          new CodeFragment(
+          new CodeFragmentTreeItem(
             f.label,
             f.id,
             vscode.TreeItemCollapsibleState.None,
@@ -94,22 +76,16 @@ function foo() {
     });
   }
 
-  public getFragmentContent(id: string): string {
-    const fragmentContent = this.extensionContext.globalState.get<CodeFragmentContent>(id);
-
-    if (fragmentContent) {
-      return fragmentContent.content;
-    }
-
-    return '';
+  public getFragmentContent(id: string): CodeFragmentContent {
+    return this.extensionContext.globalState.get<CodeFragmentContent>(id);
   }
 
-  public saveNewCodeFragment(content: string): Thenable<void> {
+  public saveNewCodeFragment(content: string, label?: string): Thenable<void> {
     const id = this.saveCodeFragmentContent(content);
 
     const header = new CodeFragmentHeader(
       id,
-      content.substr(0, 100)
+      label || content.substr(0, 100)
     );
 
     this.codeFragments.fragments.push(header);
@@ -223,6 +199,15 @@ function foo() {
         return false;
       }
     );
+  }
+
+  public getAll(): Array<[CodeFragmentHeader, CodeFragmentContent]> {
+    const headers = this.codeFragments.fragments;
+
+    return headers.map(h => {
+      const pair: [CodeFragmentHeader, CodeFragmentContent] = [h, this.getFragmentContent(h.id)];
+      return pair;
+    });
   }
 
   private executeMove(id: string, moveOperation: (index: number) => boolean): Thenable<void> {
