@@ -13,7 +13,7 @@ export class CodeFragmentTreeItem extends vscode.TreeItem {
   }
 }
 
-export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmentTreeItem>, IFragmentManager  {
+export class CodeFragmentProvider implements vscode.TreeDataProvider<CodeFragmentTreeItem>, IFragmentManager {
   private onDidChangeTreeDataEmitter: vscode.EventEmitter<CodeFragmentTreeItem | undefined> =
     new vscode.EventEmitter<CodeFragmentTreeItem | undefined>();
   public readonly onDidChangeTreeData: vscode.Event<CodeFragmentTreeItem | undefined> = this.onDidChangeTreeDataEmitter.event;
@@ -96,19 +96,20 @@ function foo() {
   }
 
   public deleteFragment(fragmentId: string): Thenable<void> {
-    this.extensionContext.globalState.update(fragmentId, undefined);
+    return this.extensionContext.globalState.update(fragmentId, undefined)
+      .then(() => {
+        const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
 
-    const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
+        if (fragmentToDelete !== -1) {
+          this.codeFragments.fragments.splice(fragmentToDelete, 1);
 
-    if (fragmentToDelete !== -1) {
-      this.codeFragments.fragments.splice(fragmentToDelete, 1);
+          this.onDidChangeTreeDataEmitter.fire();
 
-      this.onDidChangeTreeDataEmitter.fire();
+          return this.persistCodeFragmentCollection();
+        }
 
-      return this.persistCodeFragmentCollection();
-    }
-
-    return Promise.resolve();
+        return Promise.resolve();
+      });
   }
 
   public renameFragment(fragmentId: string, newLabel: string): Thenable<void> {
@@ -123,6 +124,22 @@ function foo() {
     }
 
     return Promise.resolve();
+  }
+
+  public deleteAllFragments(): Thenable<void> {
+    const tasks = this.codeFragments.fragments.map(f => this.extensionContext.globalState.update(f.id, undefined));
+
+    this.codeFragments = new CodeFragmentCollection([]);
+
+    this.onDidChangeTreeDataEmitter.fire();
+
+    // NOT: The extra Promise is here just to change the type generic type of the Promise from void[] to void.
+    return new Promise((resolve, reject) => {
+      Promise.all(tasks).then(
+        () => resolve(),
+        (reason) => reject(reason)
+      )
+    });
   }
 
   public moveUpCodeFragment(id: string): Thenable<void> {

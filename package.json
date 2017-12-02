@@ -99,6 +99,14 @@
                     "light": "images/icon-import-light.png",
                     "dark": "images/icon-import-dark.png"
                 }
+            },
+            {
+                "command": "codeFragments.deleteAllFragments",
+                "title": "Delete all fragments",
+                "icon": {
+                    "light": "images/icon-delete-light.png",
+                    "dark": "images/icon-delete-dark.png"
+                }
             }
         ],
         "menus": {
@@ -122,6 +130,11 @@
                 },
                 {
                     "command": "codeFragments.importFragments",
+                    "when": "view == codeFragments",
+                    "group": "navigation"
+                },
+                {
+                    "command": "codeFragments.deleteAllFragments",
                     "when": "view == codeFragments",
                     "group": "navigation"
                 }

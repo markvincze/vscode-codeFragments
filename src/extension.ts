@@ -1,7 +1,7 @@
 'use strict';
 import * as vscode from 'vscode';
 import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragments';
-import { Exporter } from './exporter';
+import { Exporter, ImportResult } from './exporter';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -112,8 +112,8 @@ export function activate(context: vscode.ExtensionContext) {
 
         return exporter.export()
             .then(
-                result => result,
-                error => vscode.window.showErrorMessage(error.message)
+            result => result,
+            error => vscode.window.showErrorMessage(error.message)
             );
     };
 
@@ -122,9 +122,31 @@ export function activate(context: vscode.ExtensionContext) {
 
         return exporter.import()
             .then(
-                result => result,
-                error => vscode.window.showErrorMessage(error)
+            result => {
+                if (result === ImportResult.NoFragments) {
+                    vscode.window.showInformationMessage("No fragments were found in the selected file.");
+                }
+            },
+            error => vscode.window.showErrorMessage(error)
             );
+    };
+
+    const deleteAllFragments = () => {
+        const exporter = new Exporter(codeFragmentProvider);
+
+        return vscode.window.showWarningMessage(
+            'All code fragments will be deleted, and there is no way to undo. Are you sure?',
+            { modal: true, },
+            'Delete')
+            .then(action => {
+                if (action === 'Delete') {
+                    return codeFragmentProvider.deleteAllFragments()
+                        .then(
+                        result => result,
+                        error => vscode.window.showErrorMessage(error)
+                        );
+                }
+            });
     };
 
     codeFragmentProvider
@@ -142,6 +164,7 @@ export function activate(context: vscode.ExtensionContext) {
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToBottomCodeFragment', moveToBottomCodeFragment));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.exportFragments', exportFragments));
             context.subscriptions.push(vscode.commands.registerCommand('codeFragments.importFragments', importFragments));
+            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteAllFragments', deleteAllFragments));
         });
 }
 

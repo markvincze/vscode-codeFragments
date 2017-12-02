@@ -17,6 +17,11 @@ class ExportFile {
     }
 }
 
+export enum ImportResult {
+    Success,
+    NoFragments
+}
+
 export class Exporter {
     constructor(
         private readonly manager: IFragmentManager
@@ -44,7 +49,7 @@ export class Exporter {
             });
     }
 
-    public import(): Thenable<void> {
+    public import(): Thenable<ImportResult> {
         return vscode.window.showOpenDialog(
             {
                 canSelectFiles: true,
@@ -61,9 +66,16 @@ export class Exporter {
             .then(data => {
                 const json: ExportFile = JSON.parse(data);
 
-                json.codeFragments.forEach(fragment => {
-                    this.manager.saveNewCodeFragment(fragment.content, fragment.label);
-                });
+                if (json.codeFragments && json.codeFragments.some(f => !!f.content && !!f.label)) {
+                    const tasks = json.codeFragments.map(fragment => {
+                        this.manager.saveNewCodeFragment(fragment.content, fragment.label);
+                    });
+
+                    return Promise.all(tasks).then(() => ImportResult.Success);
+                }
+                else {
+                    return ImportResult.NoFragments;
+                }
             });
     }
 
