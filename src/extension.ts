@@ -2,11 +2,13 @@
 import * as vscode from 'vscode';
 import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragments';
 import { Exporter, ImportResult } from './exporter';
+import { FragmentManager } from './fragmentManager';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    const codeFragmentProvider = new CodeFragmentProvider(context);
+    const fragmentManager = new FragmentManager(context);
+    const codeFragmentProvider = new CodeFragmentProvider(fragmentManager);
 
     const saveSelectedCodeFragment = () => {
         const showNoTextMsg = () => vscode.window.showInformationMessage(
@@ -26,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            codeFragmentProvider.saveNewCodeFragment(content);
+            fragmentManager.saveNewCodeFragment(content);
         });
     };
 
@@ -42,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const content = codeFragmentProvider.getFragmentContent(fragmentId);
+        const content = fragmentManager.getFragmentContent(fragmentId);
 
         if (content) {
             editor.edit(builder => {
@@ -57,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
                 'Delete a fragment by right clicking on it in the list and selecting "Delete Code Fragment".');
         }
 
-        codeFragmentProvider.deleteFragment(fragment.id);
+        fragmentManager.deleteFragment(fragment.id);
     };
 
     const renameCodeFragment = (fragment?: CodeFragmentTreeItem) => {
@@ -76,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInputBox(opt)
             .then(newName => {
                 if (newName) {
-                    return codeFragmentProvider.renameFragment(fragment.id, newName);
+                    return fragmentManager.renameFragment(fragment.id, newName);
                 }
 
                 return Promise.resolve();
@@ -85,30 +87,30 @@ export function activate(context: vscode.ExtensionContext) {
 
     const moveUpCodeFragment = (fragment?: CodeFragmentTreeItem) => {
         if (fragment) {
-            codeFragmentProvider.moveUpCodeFragment(fragment.id);
+            fragmentManager.moveUpCodeFragment(fragment.id);
         }
     };
 
     const moveDownCodeFragment = (fragment?: CodeFragmentTreeItem) => {
         if (fragment) {
-            codeFragmentProvider.moveDownCodeFragment(fragment.id);
+            fragmentManager.moveDownCodeFragment(fragment.id);
         }
     };
 
     const moveToTopCodeFragment = (fragment?: CodeFragmentTreeItem) => {
         if (fragment) {
-            codeFragmentProvider.moveToTopCodeFragment(fragment.id);
+            fragmentManager.moveToTopCodeFragment(fragment.id);
         }
     };
 
     const moveToBottomCodeFragment = (fragment?: CodeFragmentTreeItem) => {
         if (fragment) {
-            codeFragmentProvider.moveToBottomCodeFragment(fragment.id);
+            fragmentManager.moveToBottomCodeFragment(fragment.id);
         }
     };
 
     const exportFragments = () => {
-        const exporter = new Exporter(codeFragmentProvider);
+        const exporter = new Exporter(fragmentManager);
 
         return exporter.export()
             .then(
@@ -118,13 +120,13 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     const importFragments = () => {
-        const exporter = new Exporter(codeFragmentProvider);
+        const exporter = new Exporter(fragmentManager);
 
         return exporter.import()
             .then(
             result => {
                 if (result === ImportResult.NoFragments) {
-                    vscode.window.showInformationMessage("No fragments were found in the selected file.");
+                    vscode.window.showInformationMessage('No fragments were found in the selected file.');
                 }
             },
             error => vscode.window.showErrorMessage(error)
@@ -132,7 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
     };
 
     const deleteAllFragments = () => {
-        const exporter = new Exporter(codeFragmentProvider);
+        const exporter = new Exporter(fragmentManager);
 
         return vscode.window.showWarningMessage(
             'All code fragments will be deleted, and there is no way to undo. Are you sure?',
@@ -140,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
             'Delete')
             .then(action => {
                 if (action === 'Delete') {
-                    return codeFragmentProvider.deleteAllFragments()
+                    return fragmentManager.deleteAllFragments()
                         .then(
                         result => result,
                         error => vscode.window.showErrorMessage(error)
@@ -149,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
             });
     };
 
-    codeFragmentProvider
+    fragmentManager
         .initialize()
         .then(() => {
             vscode.window.registerTreeDataProvider('codeFragments', codeFragmentProvider);

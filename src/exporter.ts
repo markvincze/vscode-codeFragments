@@ -29,7 +29,7 @@ export class Exporter {
     }
 
     public export(): Thenable<NodeJS.ErrnoException> {
-        const allFragments = this.manager.getAll();
+        const allFragments = this.manager.getAllWithContent();
 
         const exportContent = JSON.stringify(
             new ExportFile(
@@ -72,8 +72,7 @@ export class Exporter {
                     });
 
                     return Promise.all(tasks).then(() => ImportResult.Success);
-                }
-                else {
+                } else {
                     return ImportResult.NoFragments;
                 }
             });
