@@ -2,7 +2,7 @@
     "name": "code-fragments",
     "displayName": "Code Fragments",
     "description": "Save code fragments, and later easily insert them into source files.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "publisher": "markvincze",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
@@ -26,13 +26,16 @@
         "url": "https://blog.markvincze.com"
     },
     "engines": {
-        "vscode": "^1.16.0"
+        "vscode": "^1.18.0"
     },
     "categories": [
         "Other"
     ],
     "keywords": [
-        "toolbar", "toolbox", "fragments", "presentation"
+        "toolbar",
+        "toolbox",
+        "fragments",
+        "presentation"
     ],
     "activationEvents": [
         "onCommand:saveSelectedCodeFragment",
@@ -41,12 +44,15 @@
     "main": "./out/src/extension",
     "contributes": {
         "views": {
-            "explorer": [{
-                "id": "codeFragments",
-                "name": "Code Fragments"
-            }]
+            "explorer": [
+                {
+                    "id": "codeFragments",
+                    "name": "Code Fragments"
+                }
+            ]
         },
-        "commands": [{
+        "commands": [
+            {
                 "command": "codeFragments.saveSelectedCodeFragment",
                 "title": "Save selection as Code Fragment"
             },
@@ -77,47 +83,94 @@
             {
                 "command": "codeFragments.moveToBottomCodeFragment",
                 "title": "Move to bottom"
+            },
+            {
+                "command": "codeFragments.exportFragments",
+                "title": "Export all fragments to Json",
+                "icon": {
+                    "light": "images/icon-export-light.png",
+                    "dark": "images/icon-export-dark.png"
+                }
+            },
+            {
+                "command": "codeFragments.importFragments",
+                "title": "Import fragments from Json",
+                "icon": {
+                    "light": "images/icon-import-light.png",
+                    "dark": "images/icon-import-dark.png"
+                }
+            },
+            {
+                "command": "codeFragments.deleteAllFragments",
+                "title": "Delete all fragments",
+                "icon": {
+                    "light": "images/icon-delete-light.png",
+                    "dark": "images/icon-delete-dark.png"
+                }
             }
         ],
         "menus": {
-            "commandPalette": [{
-                "command": "codeFragments.insertCodeFragment",
-                "when": "never"
-            }],
-            "editor/context": [{
-                "command": "codeFragments.saveSelectedCodeFragment",
-                "when": "editorTextFocus"
-            }],
-            "view/item/context": [{
-                "command": "codeFragments.deleteCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.baseGroup"
-            },
-            {
-                "command": "codeFragments.renameCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.baseGroup"
-            },
-            {
-                "command": "codeFragments.moveUpCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.moveGroup"
-            },
-            {
-                "command": "codeFragments.moveDownCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.moveGroup"
-            },
-            {
-                "command": "codeFragments.moveToTopCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.moveGroup"
-            },
-            {
-                "command": "codeFragments.moveToBottomCodeFragment",
-                "when": "view == codeFragments",
-                "group": "codeFragments.viewItemContext.moveGroup"
-            }]
+            "commandPalette": [
+                {
+                    "command": "codeFragments.insertCodeFragment",
+                    "when": "never"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "codeFragments.saveSelectedCodeFragment",
+                    "when": "editorTextFocus"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "codeFragments.exportFragments",
+                    "when": "view == codeFragments",
+                    "group": "navigation@0"
+                },
+                {
+                    "command": "codeFragments.importFragments",
+                    "when": "view == codeFragments",
+                    "group": "navigation@1"
+                },
+                {
+                    "command": "codeFragments.deleteAllFragments",
+                    "when": "view == codeFragments",
+                    "group": "navigation@2"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "codeFragments.deleteCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.baseGroup"
+                },
+                {
+                    "command": "codeFragments.renameCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.baseGroup"
+                },
+                {
+                    "command": "codeFragments.moveUpCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.moveGroup"
+                },
+                {
+                    "command": "codeFragments.moveDownCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.moveGroup"
+                },
+                {
+                    "command": "codeFragments.moveToTopCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.moveGroup"
+                },
+                {
+                    "command": "codeFragments.moveToBottomCodeFragment",
+                    "when": "view == codeFragments",
+                    "group": "codeFragments.viewItemContext.moveGroup"
+                }
+            ]
         }
     },
     "scripts": {
@@ -134,6 +187,6 @@
         "mocha": "^3.5.0",
         "tslint": "^5.8.0",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.5"
+        "vscode": "^1.1.8"
     }
 }
