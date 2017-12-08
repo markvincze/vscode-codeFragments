@@ -21,10 +21,19 @@ Inserting a Code Fragment to the current cursor position:
 
 ## Release Notes
 
+### [1.1.0]
+Add features to export/import to Json, and delete all fragments.
+
 ### 1.0.0
 
 Initial release of Code Fragments.
 
 ## Credits
 
-<div>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>.</div>
+The icons are licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>, and made by
+
+ - <a href="http://www.freepik.com" title="Freepik">Freepik</a>
+ - <a href="https://www.flaticon.com/authors/kirill-kazachek" title="Kirill Kazachek">Kirill Kazachek</a>
+ - <a href="https://www.flaticon.com/authors/icon-works" title="Icon Works">Icon Works</a>
+ 
+Downloaded from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.

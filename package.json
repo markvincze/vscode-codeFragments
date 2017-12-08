@@ -126,17 +126,17 @@
                 {
                     "command": "codeFragments.exportFragments",
                     "when": "view == codeFragments",
-                    "group": "navigation"
+                    "group": "navigation@0"
                 },
                 {
                     "command": "codeFragments.importFragments",
                     "when": "view == codeFragments",
-                    "group": "navigation"
+                    "group": "navigation@1"
                 },
                 {
                     "command": "codeFragments.deleteAllFragments",
                     "when": "view == codeFragments",
-                    "group": "navigation"
+                    "group": "navigation@2"
                 }
             ],
             "view/item/context": [
