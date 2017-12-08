@@ -21,8 +21,9 @@ Inserting a Code Fragment to the current cursor position:
 
 ## Release Notes
 
-### [1.1.0]
-Add features to export/import to Json, and delete all fragments.
+### 1.1.0
+
+Add export/import to Json, and delete all fragments features.
 
 ### 1.0.0
 
