@@ -29,22 +29,26 @@ export class Exporter {
     }
 
     public export(): Thenable<NodeJS.ErrnoException> {
-        const allFragments = this.manager.getAllWithContent();
-
-        const exportContent = JSON.stringify(
-            new ExportFile(
-                allFragments.map((pair: [CodeFragmentHeader, CodeFragmentContent]) => new PersistedFragment(pair[0].label, pair[1].content)))
-        );
-
         return vscode.window.showSaveDialog(
             {
                 defaultUri: vscode.Uri.file('codeFragments.json'),
                 filters: {
                     'Json files': ['json'],
-                    'All files': ['*.*']
+                    'All files': ['*']
                 }
             })
             .then(uri => {
+                if (!uri) {
+                    return;
+                }
+
+                const allFragments = this.manager.getAllWithContent();
+
+                const exportContent = JSON.stringify(
+                    new ExportFile(
+                        allFragments.map((pair: [CodeFragmentHeader, CodeFragmentContent]) => new PersistedFragment(pair[0].label, pair[1].content)))
+                );
+
                 return this.writeFileAsync(uri.fsPath, exportContent);
             });
     }
@@ -57,23 +61,32 @@ export class Exporter {
                 canSelectMany: false,
                 filters: {
                     'Json files': ['json'],
-                    'All files': ['*.*']
+                    'All files': ['*']
                 },
             })
             .then(uri => {
-                return this.readFileAsync(uri[0].fsPath);
+                if (uri) {
+                    return this.readFileAsync(uri[0].fsPath);
+                } else {
+                    return;
+                }
             })
             .then(data => {
-                const json: ExportFile = JSON.parse(data);
+                if (data) {
+                    const json: ExportFile = JSON.parse(data);
 
-                if (json.codeFragments && json.codeFragments.some(f => !!f.content && !!f.label)) {
-                    const tasks = json.codeFragments.map(fragment => {
-                        this.manager.saveNewCodeFragment(fragment.content, fragment.label);
-                    });
+                    if (json.codeFragments && json.codeFragments.some(f => !!f.content && !!f.label)) {
+                        const tasks = json.codeFragments.map(fragment => {
+                            this.manager.saveNewCodeFragment(fragment.content, fragment.label);
+                        });
 
-                    return Promise.all(tasks).then(() => ImportResult.Success);
+                        return Promise.all(tasks).then(() => ImportResult.Success);
+                    } else {
+                        return ImportResult.NoFragments;
+                    }
                 } else {
-                    return ImportResult.NoFragments;
+                    // User pressed Cancel or closed the Open File dialog.
+                    return ImportResult.Success;
                 }
             });
     }

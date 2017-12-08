@@ -120,6 +120,8 @@ function foo() {
 
     this.codeFragments = new CodeFragmentCollection([]);
 
+    this.persistCodeFragmentCollection();
+
     this.fireFragmentsChanged();
 
     // NOT: The extra Promise is here just to change the type generic type of the Promise from void[] to void.
