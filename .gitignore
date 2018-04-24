@@ -3,7 +3,6 @@ testing
 node_modules
 *.sw?
 .vscode-test
-.vscode
 .DS_Store
 *.vsix
 *.log
