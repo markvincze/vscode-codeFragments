@@ -21,6 +21,10 @@ Inserting a Code Fragment to the current cursor position:
 
 ## Release Notes
 
+### 1.1.1
+
+Fix a bug causing not being able to save fragments until the Explorer is opened (#4).
+
 ### 1.1.0
 
 Add export/import to Json, and delete all fragments features.

@@ -2,7 +2,7 @@
     "name": "code-fragments",
     "displayName": "Code Fragments",
     "description": "Save code fragments, and later easily insert them into source files.",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "publisher": "markvincze",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
