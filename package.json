@@ -38,6 +38,7 @@
         "presentation"
     ],
     "activationEvents": [
+        "*",
         "onCommand:saveSelectedCodeFragment",
         "onView:codeFragments"
     ],
