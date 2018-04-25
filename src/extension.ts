@@ -1,11 +1,9 @@
 'use strict';
 import * as vscode from 'vscode';
-import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragments';
+import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragmentsTreeItem';
 import { Exporter, ImportResult } from './exporter';
 import { FragmentManager } from './fragmentManager';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
     const fragmentManager = new FragmentManager(context);
     const codeFragmentProvider = new CodeFragmentProvider(fragmentManager);
@@ -28,7 +26,19 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            fragmentManager.saveNewCodeFragment(content);
+            const opt: vscode.InputBoxOptions = {
+                ignoreFocusOut: false,
+                placeHolder: 'Code Fragment Name',
+                prompt: 'Give the fragment a name...',
+                value: content.substr(0, 100)
+            };
+
+            vscode.window.showInputBox(opt)
+                .then(label => {
+                    fragmentManager.saveNewCodeFragment(content, label);
+
+                    return Promise.resolve();
+                });
         });
     };
 
