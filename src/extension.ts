@@ -151,7 +151,7 @@ export function activate(context: vscode.ExtensionContext) {
             });
     };
 
-    fragmentManager
+    return fragmentManager
         .initialize()
         .then(() => {
             vscode.window.registerTreeDataProvider('codeFragments', codeFragmentProvider);
