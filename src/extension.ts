@@ -26,19 +26,29 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            const opt: vscode.InputBoxOptions = {
-                ignoreFocusOut: false,
-                placeHolder: 'Code Fragment Name',
-                prompt: 'Give the fragment a name...',
-                value: content.substr(0, 100)
-            };
+            const config = vscode.workspace.getConfiguration('codeFragments');
 
-            vscode.window.showInputBox(opt)
-                .then(label => {
-                    fragmentManager.saveNewCodeFragment(content, label);
+            const defaultLabel = content.substr(0, 100);
 
-                    return Promise.resolve();
-                });
+            if (config['askForNameOnCreate']) {
+                const opt: vscode.InputBoxOptions = {
+                    ignoreFocusOut: false,
+                    placeHolder: 'Code Fragment Name',
+                    prompt: 'Give the fragment a name...',
+                    value: defaultLabel
+                };
+
+                vscode.window.showInputBox(opt)
+                    .then(label => {
+                        fragmentManager.saveNewCodeFragment(content, label);
+
+                        return Promise.resolve();
+                    });
+            } else {
+                fragmentManager.saveNewCodeFragment(content, defaultLabel);
+
+                return Promise.resolve();
+            }
         });
     };
 
