@@ -41,13 +41,9 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window.showInputBox(opt)
                     .then(label => {
                         fragmentManager.saveNewCodeFragment(content, label);
-
-                        return Promise.resolve();
                     });
             } else {
                 fragmentManager.saveNewCodeFragment(content, defaultLabel);
-
-                return Promise.resolve();
             }
         });
     };
@@ -100,8 +96,6 @@ export function activate(context: vscode.ExtensionContext) {
                 if (newName) {
                     return fragmentManager.renameFragment(fragment.id, newName);
                 }
-
-                return Promise.resolve();
             });
     };
 
