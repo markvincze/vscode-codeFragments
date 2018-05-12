@@ -21,7 +21,7 @@ Inserting a Code Fragment to the current cursor position:
 
 ## Release Notes
 
-### 1.1.2
+### 1.2.0
 
 Add the capability to always ask for the name of the fragment on save (controlled by the `codeFragments.askForNameOnCreate` setting) (#5).
 

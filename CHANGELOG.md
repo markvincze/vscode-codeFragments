@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Code Fragments extension will be documented in this file.
 
-## [1.1.2]
+## [1.2.0]
  - Add the capability to always ask for the name of the fragment on save (controlled by the `codeFragments.askForNameOnCreate` setting) (#5).
 
 ## [1.1.1]
