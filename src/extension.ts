@@ -30,7 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             const defaultLabel = content.substr(0, 100);
 
-            if (config['askForNameOnCreate']) {
+            if (config.get('askForNameOnCreate')) {
                 const opt: vscode.InputBoxOptions = {
                     ignoreFocusOut: false,
                     placeHolder: 'Code Fragment Name',
