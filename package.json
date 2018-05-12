@@ -2,7 +2,7 @@
     "name": "code-fragments",
     "displayName": "Code Fragments",
     "description": "Save code fragments, and later easily insert them into source files.",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "publisher": "markvincze",
     "license": "SEE LICENSE IN LICENSE",
     "repository": {
@@ -106,6 +106,19 @@
                 "icon": {
                     "light": "images/icon-delete-light.png",
                     "dark": "images/icon-delete-dark.png"
+                }
+            }
+        ],
+        "configuration": [
+            {
+                "type": "object",
+                "title": "Code Fragments",
+                "properties": {
+                    "codeFragments.askForNameOnCreate": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Prompt for specifying a name when creating a new fragment."
+                    }
                 }
             }
         ],

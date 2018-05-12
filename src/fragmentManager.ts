@@ -68,12 +68,12 @@ function foo() {
     return this.extensionContext.globalState.get<CodeFragmentContent>(id);
   }
 
-  public saveNewCodeFragment(content: string, label?: string): Thenable<string> {
+  public saveNewCodeFragment(content: string, label: string): Thenable<string> {
     const id = this.saveCodeFragmentContent(content);
 
     const header = new CodeFragmentHeader(
       id,
-      label || content.substr(0, 100)
+      label
     );
 
     this.codeFragments.fragments.push(header);
