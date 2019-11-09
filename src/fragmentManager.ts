@@ -68,7 +68,7 @@ function foo() {
     return this.extensionContext.globalState.get<CodeFragmentContent>(id);
   }
 
-  public saveNewCodeFragment(content: string, label: string): Thenable<string> {
+  public async saveNewCodeFragment(content: string, label?: string): Promise<string> {
     const id = this.saveCodeFragmentContent(content);
 
     const header = new CodeFragmentHeader(
@@ -80,25 +80,23 @@ function foo() {
 
     this.fireFragmentsChanged();
 
-    return this.persistCodeFragmentCollection()
-      .then(() => id);
+    await this.persistCodeFragmentCollection();
+
+    return id;
   }
 
-  public deleteFragment(fragmentId: string): Thenable<void> {
-    return this.extensionContext.globalState.update(fragmentId, undefined)
-      .then(() => {
-        const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
+  public async deleteFragment(fragmentId: string): Promise<void> {
+    await this.extensionContext.globalState.update(fragmentId, undefined);
 
-        if (fragmentToDelete !== -1) {
-          this.codeFragments.fragments.splice(fragmentToDelete, 1);
+    const fragmentToDelete = this.codeFragments.fragments.findIndex(f => f.id === fragmentId);
 
-          this.fireFragmentsChanged();
+    if (fragmentToDelete !== -1) {
+      this.codeFragments.fragments.splice(fragmentToDelete, 1);
 
-          return this.persistCodeFragmentCollection();
-        }
+      this.fireFragmentsChanged();
 
-        return Promise.resolve();
-      });
+      await this.persistCodeFragmentCollection();
+    }
   }
 
   public renameFragment(fragmentId: string, newLabel: string): Thenable<void> {
@@ -115,22 +113,17 @@ function foo() {
     return Promise.resolve();
   }
 
-  public deleteAllFragments(): Thenable<void> {
+  public async deleteAllFragments(): Promise<void> {
     const tasks = this.codeFragments.fragments.map(f => this.extensionContext.globalState.update(f.id, undefined));
 
     this.codeFragments = new CodeFragmentCollection([]);
 
-    this.persistCodeFragmentCollection();
+    await this.persistCodeFragmentCollection();
 
     this.fireFragmentsChanged();
 
     // NOT: The extra Promise is here just to change the type generic type of the Promise from void[] to void.
-    return new Promise((resolve, reject) => {
-      Promise.all(tasks).then(
-        () => resolve(),
-        (reason) => reject(reason)
-      );
-    });
+    await Promise.all(tasks);
   }
 
   public moveUpCodeFragment(id: string): Thenable<void> {

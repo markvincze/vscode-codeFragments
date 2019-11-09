@@ -28,33 +28,32 @@ export class Exporter {
     ) {
     }
 
-    public export(): Thenable<NodeJS.ErrnoException> {
-        return vscode.window.showSaveDialog(
+    public async export(): Promise<NodeJS.ErrnoException> {
+        const uri = await vscode.window.showSaveDialog(
             {
                 defaultUri: vscode.Uri.file('codeFragments.json'),
                 filters: {
                     'Json files': ['json'],
                     'All files': ['*']
                 }
-            })
-            .then(uri => {
-                if (!uri) {
-                    return;
-                }
-
-                const allFragments = this.manager.getAllWithContent();
-
-                const exportContent = JSON.stringify(
-                    new ExportFile(
-                        allFragments.map((pair: [CodeFragmentHeader, CodeFragmentContent]) => new PersistedFragment(pair[0].label, pair[1].content)))
-                );
-
-                return this.writeFileAsync(uri.fsPath, exportContent);
             });
+
+        if (!uri) {
+            return;
+        }
+
+        const allFragments = this.manager.getAllWithContent();
+
+        const exportContent = JSON.stringify(
+            new ExportFile(
+                allFragments.map((pair: [CodeFragmentHeader, CodeFragmentContent]) => new PersistedFragment(pair[0].label, pair[1].content)))
+        );
+
+        return await this.writeFileAsync(uri.fsPath, exportContent);
     }
 
-    public import(): Thenable<ImportResult> {
-        return vscode.window.showOpenDialog(
+    public async import(): Promise<ImportResult> {
+        const uri = await vscode.window.showOpenDialog(
             {
                 canSelectFiles: true,
                 canSelectFolders: false,
@@ -63,32 +62,32 @@ export class Exporter {
                     'Json files': ['json'],
                     'All files': ['*']
                 },
-            })
-            .then(uri => {
-                if (uri) {
-                    return this.readFileAsync(uri[0].fsPath);
-                } else {
-                    return;
-                }
-            })
-            .then(data => {
-                if (data) {
-                    const json: ExportFile = JSON.parse(data);
-
-                    if (json.codeFragments && json.codeFragments.some(f => !!f.content && !!f.label)) {
-                        const tasks = json.codeFragments.map(fragment => {
-                            this.manager.saveNewCodeFragment(fragment.content, fragment.label);
-                        });
-
-                        return Promise.all(tasks).then(() => ImportResult.Success);
-                    } else {
-                        return ImportResult.NoFragments;
-                    }
-                } else {
-                    // User pressed Cancel or closed the Open File dialog.
-                    return ImportResult.Success;
-                }
             });
+
+        if (!uri) {
+            return;
+        }
+
+        const data = await this.readFileAsync(uri[0].fsPath);
+
+        if (data) {
+            const json: ExportFile = JSON.parse(data);
+
+            if (json.codeFragments && json.codeFragments.some(f => !!f.content && !!f.label)) {
+                const tasks = json.codeFragments.map(fragment => {
+                    this.manager.saveNewCodeFragment(fragment.content, fragment.label);
+                });
+
+                await Promise.all(tasks);
+
+                return ImportResult.Success;
+            } else {
+                return ImportResult.NoFragments;
+            }
+        } else {
+            // User pressed Cancel or closed the Open File dialog.
+            return ImportResult.Success;
+        }
     }
 
     private readFileAsync(filename: string): Thenable<string> {

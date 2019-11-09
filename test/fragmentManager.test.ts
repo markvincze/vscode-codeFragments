@@ -5,16 +5,15 @@ import { CodeFragmentCollection, CodeFragmentHeader, FragmentManager } from '../
 import { DummyExtensionContext } from './dummyExtensionContext';
 
 suite('FragmentManager tests', () => {
-    test('The first initialize creates an example fragment', () => {
+    test('The first initialize creates an example fragment', async () => {
         const ctx = new DummyExtensionContext();
         const sut = new FragmentManager(ctx);
 
-        return sut.initialize()
-            .then(() => {
-                const fragments = sut.getAll();
-                assert.equal(fragments.length, 1);
-                assert.equal(fragments[0].label, 'Example fragment');
-            });
+        await sut.initialize();
+
+        const fragments = sut.getAll();
+        assert.equal(fragments.length, 1);
+        assert.equal(fragments[0].label, 'Example fragment');
     });
 
     test('Initialize does not override existing fragments', () => {
