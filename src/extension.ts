@@ -4,7 +4,7 @@ import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragmentsTreeI
 import { Exporter, ImportResult } from './exporter';
 import { FragmentManager } from './fragmentManager';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
     const fragmentManager = new FragmentManager(context);
     const codeFragmentProvider = new CodeFragmentProvider(fragmentManager);
 
@@ -78,7 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
         fragmentManager.deleteFragment(fragment.id);
     };
 
-    const renameCodeFragment = (fragment?: CodeFragmentTreeItem) => {
+    const renameCodeFragment = async (fragment?: CodeFragmentTreeItem) => {
         if (!fragment) {
             vscode.window.showInformationMessage(
                 'Rename a fragment by right clicking on it in the list and selecting "Rename Code Fragment".');
@@ -91,12 +91,11 @@ export function activate(context: vscode.ExtensionContext) {
             value: fragment.label
         };
 
-        vscode.window.showInputBox(opt)
-            .then(newName => {
-                if (newName) {
-                    return fragmentManager.renameFragment(fragment.id, newName);
-                }
-            });
+        const newName = await vscode.window.showInputBox(opt);
+
+        if (newName) {
+            return fragmentManager.renameFragment(fragment.id, newName);
+        }
     };
 
     const moveUpCodeFragment = (fragment?: CodeFragmentTreeItem) => {
@@ -123,65 +122,62 @@ export function activate(context: vscode.ExtensionContext) {
         }
     };
 
-    const exportFragments = () => {
+    const exportFragments = async () => {
         const exporter = new Exporter(fragmentManager);
 
-        return exporter.export()
-            .then(
-            result => result,
-            error => vscode.window.showErrorMessage(error.message)
-            );
+        try {
+            await exporter.export();
+        } catch (error) {
+            await vscode.window.showErrorMessage(error.message);
+        }
     };
 
-    const importFragments = () => {
+    const importFragments = async () => {
         const exporter = new Exporter(fragmentManager);
 
-        return exporter.import()
-            .then(
-            result => {
-                if (result === ImportResult.NoFragments) {
-                    vscode.window.showInformationMessage('No fragments were found in the selected file.');
-                }
-            },
-            error => vscode.window.showErrorMessage(error)
-            );
+        try {
+            const result = await exporter.import();
+
+            if (result === ImportResult.NoFragments) {
+                vscode.window.showInformationMessage('No fragments were found in the selected file.');
+            }
+        } catch (error) {
+            await vscode.window.showErrorMessage(error);
+        }
     };
 
-    const deleteAllFragments = () => {
+    const deleteAllFragments = async () => {
         const exporter = new Exporter(fragmentManager);
 
-        return vscode.window.showWarningMessage(
+        const action = await vscode.window.showWarningMessage(
             'All code fragments will be deleted, and there is no way to undo. Are you sure?',
             { modal: true, },
-            'Delete')
-            .then(action => {
-                if (action === 'Delete') {
-                    return fragmentManager.deleteAllFragments()
-                        .then(
-                        result => result,
-                        error => vscode.window.showErrorMessage(error)
-                        );
-                }
-            });
+            'Delete');
+
+        if (action === 'Delete') {
+            try {
+                await fragmentManager.deleteAllFragments();
+            } catch (error) {
+                await vscode.window.showErrorMessage(error);
+            }
+        }
     };
 
-    fragmentManager
-        .initialize()
-        .then(() => {
-            vscode.window.registerTreeDataProvider('codeFragments', codeFragmentProvider);
+    await fragmentManager.initialize();
 
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.saveSelectedCodeFragment', saveSelectedCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.insertCodeFragment', insertCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteCodeFragment', deleteCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.renameCodeFragment', renameCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveUpCodeFragment', moveUpCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveDownCodeFragment', moveDownCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToTopCodeFragment', moveToTopCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToBottomCodeFragment', moveToBottomCodeFragment));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.exportFragments', exportFragments));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.importFragments', importFragments));
-            context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteAllFragments', deleteAllFragments));
-        });
+    vscode.window.registerTreeDataProvider('codeFragments', codeFragmentProvider);
+
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.saveSelectedCodeFragment', saveSelectedCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.insertCodeFragment', insertCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteCodeFragment', deleteCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.renameCodeFragment', renameCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveUpCodeFragment', moveUpCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveDownCodeFragment', moveDownCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToTopCodeFragment', moveToTopCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.moveToBottomCodeFragment', moveToBottomCodeFragment));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.exportFragments', exportFragments));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.importFragments', importFragments));
+    context.subscriptions.push(vscode.commands.registerCommand('codeFragments.deleteAllFragments', deleteAllFragments));
 }
 
 export function deactivate() { }
