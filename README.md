@@ -2,13 +2,13 @@
 
 [![Build Status](https://travis-ci.org/markvincze/vscode-codeFragments.svg?branch=master)](https://travis-ci.org/markvincze/vscode-codeFragments)
 
-With this extension you can save static code fragments for later use, and easily insert them into source files whenever needed.  
+With this extension you can save static code fragments for later use, and easily insert them into source files whenever needed.
 It can be specifically useful when doing coding demos during presentations.
 
 ## Features
 
-After installing the extension, a new section called `CODE FRAGMENTS` is added to the Explorer, which shows a list of the previously saved fragments.  
-You can save a piece of code by selecting it in the editor, and then executing the "Save selection as Code Fragment" from the Command Palette (brought up with `Ctrl+Shift+P`) or in the context menu.  
+After installing the extension, a new section called `CODE FRAGMENTS` is added to the Explorer, which shows a list of the previously saved fragments.
+You can save a piece of code by selecting it in the editor, and then executing the "Save selection as Code Fragment" from the Command Palette (brought up with `Ctrl+Shift+P`) or in the context menu.
 Clicking on an existing fragment in the list inserts its content into the editor at the current cursor position.
 
 Saving a selection as a Code Fragment:
@@ -19,8 +19,16 @@ Inserting a Code Fragment to the current cursor position:
 
 ![Inserting Code Fragments.](images/codefragments-insert.gif)
 
+Inserting a Code Fragment with typewriter effect:
+![Typewriter Effect](images/typewriter-effect.gif)
+
+![Typewriter Effect Settings](images/typewriter-settings.png)
+
 ## Release Notes
 
+### 1.3.0?
+
+Add the capability to always ask for the name of the fragment on save (controlled by the `codeFragments.enableTypewriterEffect` setting).
 ### 1.2.0
 
 Add the capability to always ask for the name of the fragment on save (controlled by the `codeFragments.askForNameOnCreate` setting) (#5).
@@ -44,5 +52,5 @@ The icons are licensed under <a href="http://creativecommons.org/licenses/by/3.0
  - <a href="http://www.freepik.com" title="Freepik">Freepik</a>
  - <a href="https://www.flaticon.com/authors/kirill-kazachek" title="Kirill Kazachek">Kirill Kazachek</a>
  - <a href="https://www.flaticon.com/authors/icon-works" title="Icon Works">Icon Works</a>
- 
+
 Downloaded from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>.
