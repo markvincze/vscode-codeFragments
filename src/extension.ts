@@ -4,6 +4,10 @@ import { CodeFragmentProvider, CodeFragmentTreeItem } from './codeFragmentsTreeI
 import { Exporter, ImportResult } from './exporter';
 import { FragmentManager } from './fragmentManager';
 
+function wait(milliseconds: number) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+
 export async function activate(context: vscode.ExtensionContext) {
     const fragmentManager = new FragmentManager(context);
     const codeFragmentProvider = new CodeFragmentProvider(fragmentManager);
@@ -63,9 +67,20 @@ export async function activate(context: vscode.ExtensionContext) {
         const content = fragmentManager.getFragmentContent(fragmentId);
 
         if (content) {
-            editor.edit(builder => {
-                builder.insert(editor.selection.start, content.content);
-            });
+            const config = vscode.workspace.getConfiguration('codeFragments');
+            if (!config.get('enableTypewriterEffect')) {
+                editor.edit(builder => {
+                    builder.insert(editor.selection.start, content.content);
+                });
+            } else {
+                let line = editor.selection.start.line;
+                let start = editor.selection.start.character;
+                [...content.content].reduce((promise: Promise<any>, character: string, index: number) =>
+                    promise.then((_: any) => editor.edit(editBuilder => editBuilder.insert(new vscode.Position(line, start + index), character))
+                        .then(_ => { if (character === '\n') { line++ } })
+                        .then(_ => { return wait(100) })
+                    ), Promise.resolve());
+            }
         }
     };
 

@@ -119,6 +119,11 @@
                         "type": "boolean",
                         "default": false,
                         "description": "Prompt for specifying a name when creating a new fragment."
+                    },
+                    "codeFragments.enableTypewriterEffect": {
+                        "type": "boolean",
+                        "default": false,
+                        "description": "Enable/disable typewriter effect"
                     }
                 }
             }
